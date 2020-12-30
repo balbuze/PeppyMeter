@@ -112,35 +112,34 @@ class Peppymeter(ScreensaverMeter):
         
         return meter
     
-    def init_display(self):
-        screen_w = self.util.meter_config[SCREEN_INFO][WIDTH]
-        screen_h = self.util.meter_config[SCREEN_INFO][HEIGHT]
-        depth = self.util.meter_config[SCREEN_INFO][DEPTH]
+   def init_display(self):
+        self.screen_w = self.util.meter_config[SCREEN_INFO][WIDTH]
+        self.screen_h = self.util.meter_config[SCREEN_INFO][HEIGHT]
+        self.depth = self.util.meter_config[SCREEN_INFO][DEPTH]
         
-        os.environ["SDL_FBDEV"] = self.util.meter_config[SDL_ENV_VARS][SDL_FB_DEVICE]
-        os.environ["SDL_MOUSEDEV"] = self.util.meter_config[SDL_ENV_VARS][SDL_MOUSE_DEVICE]
-        os.environ["SDL_MOUSEDRV"] = self.util.meter_config[SDL_ENV_VARS][SDL_MOUSE_DRIVER]
-        
+        os.environ["SDL_FBDEV"] = "/dev/fb1"
+        os.environ["SDL_MOUSEDEV"] = "/dev/input/touchscreen"
+        os.environ["SDL_MOUSEDRV"] = "TSLIB"
+
         if not self.util.meter_config[OUTPUT_DISPLAY]:
-            os.environ["SDL_VIDEODRIVER"] = self.util.meter_config[SDL_ENV_VARS][SDL_VIDEO_DRIVER]
-            os.environ["DISPLAY"] = self.util.meter_config[SDL_ENV_VARS][SDL_VIDEO_DISPLAY]
+
+            os.environ["SDL_VIDEODRIVER"] = "dummy"
+            os.environ["DISPLAY"] = ":0"
             pygame.display.init()
             pygame.font.init()
-            self.util.PYGAME_SCREEN = pygame.display.set_mode((1,1), pygame.DOUBLEBUF, depth)
+            self.util.PYGAME_SCREEN = pygame.display.set_mode((1,1), pygame.NOFRAME|pygame.DOUBLEBUF, self.depth)
             return
-        
+
         if "win" not in sys.platform:
-            if not self.util.meter_config[SDL_ENV_VARS][SDL_VIDEO_DRIVER] == "dummy":
-                os.environ["SDL_VIDEODRIVER"] = self.util.meter_config[SDL_ENV_VARS][SDL_VIDEO_DRIVER]
-                os.environ["DISPLAY"] = self.util.meter_config[SDL_ENV_VARS][SDL_VIDEO_DISPLAY]
+            os.environ["DISPLAY"] = ":0"
             pygame.display.init()
             pygame.mouse.set_visible(False)
-        else:            
+        else:
             pygame.init()
             pygame.display.set_caption("Peppy Meter")
-            
-        self.util.PYGAME_SCREEN = pygame.display.set_mode((screen_w, screen_h), pygame.DOUBLEBUF, depth)        
-        self.util.meter_config[SCREEN_RECT] = pygame.Rect(0, 0, screen_w, screen_h) 
+
+        self.util.PYGAME_SCREEN = pygame.display.set_mode((self.screen_w, self.screen_h), pygame.NOFRAME|pygame.DOUBLEBUF, self.depth)
+        self.util.meter_config[SCREEN_RECT] = pygame.Rect(0, 0, self.screen_w, self.screen_h)
     
     def start_interface_outputs(self):
         """ Starts writing to Serial and I@C interfaces """
