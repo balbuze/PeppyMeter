@@ -112,7 +112,7 @@ class Peppymeter(ScreensaverMeter):
         
         return meter
     
-   def init_display(self):
+    def init_display(self):
         self.screen_w = self.util.meter_config[SCREEN_INFO][WIDTH]
         self.screen_h = self.util.meter_config[SCREEN_INFO][HEIGHT]
         self.depth = self.util.meter_config[SCREEN_INFO][DEPTH]
