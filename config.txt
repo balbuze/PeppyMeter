@@ -38,7 +38,7 @@ update.period = 0.1
 [data.source]
 type = pipe
 polling.interval = 0.033
-pipe.name = /home/pi/myfifo
+pipe.name = /tmp/myfifopeppy
 volume.constant = 80.0
 volume.min = 0.0
 volume.max = 100.0
